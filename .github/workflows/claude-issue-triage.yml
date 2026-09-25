@@ -1,0 +1,88 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened, edited]
+
+concurrency:
+  group: issue-triage-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    # Solo en issues nuevos o cuando cambia el título/cuerpo; ignora acciones de bots para evitar loops
+    if: |
+      !endsWith(github.actor, '[bot]') &&
+      (github.event.action == 'opened' ||
+       (github.event.action == 'edited' && (github.event.changes.body != null || github.event.changes.title != null)))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Ensure triage labels exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          create() { gh label create "$1" --color "$2" --description "$3" --force; }
+          create "bug"               "d73a4a" "Algo no funciona correctamente"
+          create "enhancement"       "a2eeef" "Nueva funcionalidad o mejora"
+          create "question"          "d876e3" "Pregunta o solicitud de información"
+          create "documentation"     "0075ca" "Mejoras o adiciones a la documentación"
+          create "area:gameplay"     "1d76db" "Mecánicas: piezas, colisiones, rotación, caída, líneas"
+          create "area:rendering"    "5319e7" "Dibujo en canvas: tablero, ghost, preview"
+          create "area:controls"     "0e8a16" "Entrada de teclado y controles"
+          create "area:scoring"      "fbca04" "Puntaje, niveles y velocidad"
+          create "area:ui"           "c5def5" "HTML/CSS, overlays, textos y layout"
+          create "area:performance"  "f9d0c4" "Rendimiento y game loop"
+          create "priority:high"     "b60205" "Prioridad alta"
+          create "priority:medium"   "fbca04" "Prioridad media"
+          create "priority:low"      "0e8a16" "Prioridad baja"
+
+      - name: Run Claude triage
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          claude_args: '--allowedTools "Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh api:*),Bash(gh label list:*),Read,Glob,Grep"'
+          prompt: |
+            Eres el encargado de hacer triage de issues en el repositorio ${{ github.repository }},
+            un Tetris en JavaScript vanilla con HTML5 Canvas (lee CLAUDE.md para la arquitectura).
+
+            Analiza el issue #${{ github.event.issue.number }} (evento: ${{ github.event.action }}).
+
+            1. Lee el issue con: gh issue view ${{ github.event.issue.number }} --json title,body,labels
+            2. Revisa el código relevante (game.js, index.html, style.css) para ubicar el problema.
+            3. Asigna labels usando EXCLUSIVAMENTE este set (nunca crees labels nuevos):
+               - Tipo (exactamente 1): bug, enhancement, question, documentation
+               - Área (1 o más): area:gameplay, area:rendering, area:controls, area:scoring, area:ui, area:performance
+               - Prioridad (exactamente 1): priority:high, priority:medium, priority:low
+               Si el issue ya tiene labels de este set que ya no aplican, quítalos.
+               Usa: gh issue edit ${{ github.event.issue.number }} --add-label "..." --remove-label "..."
+               No toques labels que no pertenezcan a este set.
+            4. Publica el diagnóstico en UN ÚNICO comentario cuya primera línea sea exactamente:
+               <!-- claude-triage -->
+               - Busca si ya existe un comentario con ese marcador:
+                 gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments --paginate
+               - Si existe, actualízalo: gh api -X PATCH repos/${{ github.repository }}/issues/comments/<ID> -f body="..."
+               - Si no existe, créalo: gh issue comment ${{ github.event.issue.number }} --body "..."
+
+            El diagnóstico debe estar en español, en Markdown, con estas secciones:
+            ## 🔍 Diagnóstico automático
+            - **Resumen**: qué se reporta, en 2-3 líneas.
+            - **Clasificación**: tipo, área(s) y prioridad asignadas, y por qué.
+            - **Causa probable**: explicación técnica con referencias `archivo:línea` y nombres de funciones.
+            - **Archivos / funciones afectados**: lista.
+            - **Propuesta de solución**: pasos concretos para implementarla (sin escribir el código completo).
+            - **Cómo verificar**: pasos manuales en el navegador (el repo no tiene tests).
+            - **Información faltante**: preguntas al autor si el issue es ambiguo (omite la sección si no aplica).
+
+            Restricciones: NO modifiques archivos, NO crees branches, commits ni PRs, y NO menciones "@claude"
+            en el comentario (activaría otro workflow).
