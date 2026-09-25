@@ -84,5 +84,14 @@ jobs:
             - **Cómo verificar**: pasos manuales en el navegador (el repo no tiene tests).
             - **Información faltante**: preguntas al autor si el issue es ambiguo (omite la sección si no aplica).
 
+            Formato del comentario: debe ser Markdown válido que GitHub renderice correctamente (GitHub Flavored Markdown):
+            - Usa encabezados (`##`, `###`), listas con `-`, **negritas**, `código inline` y bloques de código con triple backtick
+              indicando el lenguaje (por ejemplo ```js). Puedes usar tablas GFM y listas de tareas (`- [ ]`) si aportan claridad.
+            - Usa saltos de línea reales, nunca secuencias literales como `\n`, y deja una línea en blanco entre secciones y antes de listas.
+            - No escapes el Markdown ni envuelvas el comentario completo en un bloque de código.
+            - Para no romper el formato con las comillas o backticks de la shell, pasa el cuerpo mediante un heredoc con comillas simples,
+              por ejemplo: gh issue comment <N> --body-file - <<'EOF' ... EOF
+              o bien: gh api -X PATCH repos/.../issues/comments/<ID> -F body=@- <<'EOF' ... EOF
+
             Restricciones: NO modifiques archivos, NO crees branches, commits ni PRs, y NO menciones "@claude"
             en el comentario (activaría otro workflow).
