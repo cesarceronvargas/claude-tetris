@@ -31,7 +31,8 @@ Everything lives in `game.js` as module-level state and functions (no classes, n
 - **Level/speed**: level increases every 10 lines; `dropInterval = max(100, 1000 - (level - 1) * 90)` ms.
 - **Ghost piece**: `ghostY()` projects the current piece straight down until collision; drawn at `globalAlpha = 0.2`.
 - **Rendering**: `draw()` clears and redraws the grid, locked board, ghost, and current piece every frame onto `#board`; `drawNext()` renders the preview piece onto the separate `#next-canvas`.
-- **Input**: a single `keydown` listener handles arrows (move/soft-drop), Up/X (rotate), Space (hard drop, with `preventDefault`), and P (pause), gated by `paused`/`gameOver` flags.
+- **Input**: a single `keydown` listener handles arrows (move/soft-drop), Up/X (rotate), Space (hard drop, with `preventDefault`), and P/Escape (pause menu, ignoring `e.repeat`), gated by `paused`/`gameOver` flags.
+- **Pause menu**: `togglePause()` opens/closes the dedicated `#pause-menu` overlay (`#overlay` is only for GAME OVER; P/Escape do nothing after game over). While open, `paused` blocks all game keys. `resumeGame()` hides the menu and unpauses on the next animation frame so the closing key/click never reaches the game. The menu offers Reanudar, Reiniciar (`init()`), Ver controles (toggles `#pause-controls`) and a Nivel inicial `<select>` (1–10) that sets `startLevel`; `init()` starts at `level = startLevel` and `clearLines` levels up to `max(gameStartLevel, floor(lines / 10) + 1)` (`gameStartLevel` is snapshotted in `init()` so changing the select mid-game has no effect until restart), with speed from `intervalForLevel(level)`.
 
 Tunable constants live at the top of `game.js`: `COLS`, `ROWS`, `BLOCK`, `COLORS`, `LINE_SCORES`, initial `dropInterval`. If `COLS`, `ROWS`, or `BLOCK` change, update the `#board` canvas `width`/`height` in `index.html` to match (`COLS × BLOCK` and `ROWS × BLOCK`).
 
