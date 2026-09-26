@@ -17,6 +17,11 @@
   --btn-bg: #7aa2f7;
   --btn-color: #0f0f17;
   --btn-hover: #9bbdff;
+  --pause-title-color: #7aa2f7;
+  --pause-btn-bg: #22223a;
+  --pause-btn-border: #3a3a5a;
+  --pause-btn-color: #e0e0e0;
+  --pause-btn-hover: #2e2e4a;
 }
 
 [data-theme="light"] {
@@ -38,6 +43,11 @@
   --btn-bg: #3b5bdb;
   --btn-color: #ffffff;
   --btn-hover: #5c7cfa;
+  --pause-title-color: #3b5bdb;
+  --pause-btn-bg: #ffffff;
+  --pause-btn-border: #c8c8d8;
+  --pause-btn-color: #1a1a25;
+  --pause-btn-hover: #e8e8f2;
 }
 
 *, *::before, *::after {
@@ -295,4 +305,102 @@ kbd {
 
 #restart-btn:hover {
   background: var(--btn-hover);
+}
+
+/* ---- Menú de pausa ---- */
+.pause-box {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  width: 220px;
+  text-align: center;
+}
+
+#pause-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--pause-title-color);
+  margin-bottom: 4px;
+}
+
+.pause-btn {
+  background: var(--pause-btn-bg);
+  color: var(--pause-btn-color);
+  border: 1px solid var(--pause-btn-border);
+  border-radius: 6px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pause-btn:hover {
+  background: var(--pause-btn-hover);
+}
+
+#pause-resume {
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  border-color: var(--btn-bg);
+}
+
+#pause-resume:hover {
+  background: var(--btn-hover);
+}
+
+.pause-btn:focus-visible,
+#start-level:focus-visible {
+  outline: 2px solid var(--value-color);
+  outline-offset: 2px;
+}
+
+.pause-controls {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--pause-btn-border);
+  border-radius: 6px;
+  text-align: left;
+}
+
+.pause-controls.hidden {
+  display: none;
+}
+
+.pause-controls li {
+  font-size: 12px;
+  color: var(--controls-color);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pause-level {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+#start-level {
+  background: var(--pause-btn-bg);
+  color: var(--pause-btn-color);
+  border: 1px solid var(--pause-btn-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+.pause-hint {
+  font-size: 11px;
+  color: var(--label-color);
 }
