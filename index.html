@@ -61,12 +61,38 @@
           </ul>
         </div>
       </aside>
+      <div id="start-screen" class="overlay start-screen">
+        <div class="overlay-box">
+          <p class="start-title">TETRIS</p>
+          <span class="label">TOP 5</span>
+          <div id="start-table" class="records-table-wrap"></div>
+          <p id="start-stats" class="records-stats"></p>
+          <button id="play-btn" class="btn-primary">Jugar</button>
+          <button id="reset-records-btn" class="btn-link">Borrar records</button>
+          <div id="reset-confirm" class="reset-confirm hidden">
+            <span>¿Borrar todos los records?</span>
+            <div class="reset-confirm-actions">
+              <button id="reset-yes-btn" class="btn-small btn-danger">Sí, borrar</button>
+              <button id="reset-no-btn" class="btn-small">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="overlay" class="overlay hidden">
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+        <div id="gameover-records" class="records-section hidden">
+          <p id="new-record-msg" class="new-record-msg hidden"></p>
+          <form id="record-form" class="record-form hidden" autocomplete="off">
+            <input type="text" id="record-name" maxlength="12" placeholder="Tu nombre" aria-label="Nombre del jugador" />
+            <button type="submit" id="save-record-btn" class="btn-small">Guardar</button>
+          </form>
+          <div id="gameover-table" class="records-table-wrap"></div>
+          <p id="gameover-stats" class="records-stats"></p>
+        </div>
         <button id="restart-btn">Reiniciar</button>
       </div>
     </div>
