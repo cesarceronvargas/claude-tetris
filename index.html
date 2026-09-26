@@ -18,6 +18,15 @@
         </label>
         <span class="theme-icon" aria-hidden="true">☀️</span>
       </div>
+      <div class="skin-picker">
+        <label for="skin-select" class="label">ESTILO</label>
+        <select id="skin-select" aria-label="Estilo de bloques">
+          <option value="retro">Retro</option>
+          <option value="neon">Neon</option>
+          <option value="pastel">Pastel</option>
+          <option value="pixel">Pixel art</option>
+        </select>
+      </div>
     </div>
     <div class="game-container">
       <canvas id="board" width="300" height="600"></canvas>
@@ -48,17 +57,64 @@
             <li><kbd>↑</kbd> rotar</li>
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
-            <li><kbd>P</kbd> pausa</li>
+            <li><kbd>P</kbd><kbd>Esc</kbd> pausa</li>
           </ul>
         </div>
       </aside>
+      <div id="start-screen" class="overlay start-screen">
+        <div class="overlay-box">
+          <p class="start-title">TETRIS</p>
+          <span class="label">TOP 5</span>
+          <div id="start-table" class="records-table-wrap"></div>
+          <p id="start-stats" class="records-stats"></p>
+          <button id="play-btn" class="btn-primary">Jugar</button>
+          <button id="reset-records-btn" class="btn-link">Borrar records</button>
+          <div id="reset-confirm" class="reset-confirm hidden">
+            <span>¿Borrar todos los records?</span>
+            <div class="reset-confirm-actions">
+              <button id="reset-yes-btn" class="btn-small btn-danger">Sí, borrar</button>
+              <button id="reset-no-btn" class="btn-small">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="overlay" class="overlay hidden">
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+        <div id="gameover-records" class="records-section hidden">
+          <p id="new-record-msg" class="new-record-msg hidden"></p>
+          <form id="record-form" class="record-form hidden" autocomplete="off">
+            <input type="text" id="record-name" maxlength="12" placeholder="Tu nombre" aria-label="Nombre del jugador" />
+            <button type="submit" id="save-record-btn" class="btn-small">Guardar</button>
+          </form>
+          <div id="gameover-table" class="records-table-wrap"></div>
+          <p id="gameover-stats" class="records-stats"></p>
+        </div>
         <button id="restart-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <div id="pause-menu" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+      <div class="pause-box">
+        <p id="pause-title">PAUSA</p>
+        <button type="button" class="pause-btn" id="pause-resume">Reanudar</button>
+        <button type="button" class="pause-btn" id="pause-restart">Reiniciar</button>
+        <button type="button" class="pause-btn" id="pause-controls-btn" aria-expanded="false" aria-controls="pause-controls">Ver controles</button>
+        <ul id="pause-controls" class="pause-controls hidden">
+          <li><kbd>&larr;</kbd><kbd>&rarr;</kbd> mover</li>
+          <li><kbd>&uarr;</kbd><kbd>X</kbd> rotar</li>
+          <li><kbd>&darr;</kbd> bajar</li>
+          <li><kbd>Space</kbd> caída</li>
+          <li><kbd>P</kbd><kbd>Esc</kbd> pausa</li>
+        </ul>
+        <label class="pause-level" for="start-level">
+          Nivel inicial
+          <select id="start-level"></select>
+        </label>
+        <p class="pause-hint">Se aplica al reiniciar</p>
       </div>
     </div>
   </div>
