@@ -134,6 +134,35 @@ body {
   outline-offset: 2px;
 }
 
+/* ---- Selector de skin ---- */
+.skin-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#skin-select {
+  background: var(--kbd-bg);
+  color: var(--kbd-color);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+#skin-select:focus-visible {
+  outline: 2px solid var(--value-color);
+  outline-offset: 2px;
+}
+
+/* Skins que fuerzan el fondo del tablero */
+[data-skin="neon"] {
+  --board-bg: #000000;
+  --board-border: #1f1f3a;
+}
+
 .game-container {
   display: flex;
   gap: 20px;
